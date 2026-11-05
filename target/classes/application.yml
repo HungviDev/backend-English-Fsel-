@@ -1,0 +1,65 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: smart-english-learning
+
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=SmartEnglishLearningDB;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: 123
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        # Bắt buộc giữ nguyên tên thuộc tính Java sang tên cột DB (camelCase: userId, roleId, isPlacementCompleted,...)
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+# JWT Configuration
+jwt:
+  # Secret key tối thiểu 256 bits (32 bytes) mã hóa Base64/Hex cho HMAC-SHA256
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000 # 24 hours in milliseconds
+
+# AI & LLM Integration Configuration (Google Gemini)
+ai:
+  llm:
+    # Endpoint chuẩn OpenAI tương thích chính thức của Google Gemini
+    api-url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+    # Dán API Key Gemini của bạn (dạng AIzaSy...) vào đây hoặc cấu hình qua biến môi trường AI_LLM_API_KEY
+    api-key: AQ.Ab8RN6K4YtyEIYVxmr6gJOfMM_-Js0W9b1Xxo_cJcQxqlmdNCw
+    # Model Gemini tối ưu nhất hiện nay cho việc sinh JSON cấu trúc lộ trình học
+    model: gemini-3.5-flash-lite
+    # Đổi thành false để gọi Gemini thật (hoặc true nếu muốn chạy thử nghiệm không cần mạng/key)
+    mock-enabled: true
+
+# OpenAPI / Swagger UI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.smartenglish: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Run SmartEnglishApplication",
+            "request": "launch",
+            "mainClass": "com.smartenglish.SmartEnglishApplication",
+            "projectName": "smart-english-backend",
+            "args": "",
+            "env": {}
+        }
+    ]
+}
+
