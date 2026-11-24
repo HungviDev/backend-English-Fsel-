@@ -9,6 +9,10 @@ import com.smartenglish.exception.ResourceNotFoundException;
 import com.smartenglish.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,9 +61,72 @@ public class PlacementTestService {
     }
 
     @Transactional(readOnly = true)
+    public PageResponse<PlacementTestResponse> getAllTestsPaged(
+            String search,
+            Boolean isActive,
+            int page,
+            int size,
+            String sortBy,
+            String sortDir) {
+
+        String cleanSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+        String safeSortBy = (sortBy != null && !sortBy.trim().isEmpty()) ? sortBy.trim() : "createdAt";
+        Sort.Direction direction = "asc".equalsIgnoreCase(sortDir) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size), Sort.by(direction, safeSortBy));
+
+        Page<PlacementTest> testPage = placementTestRepository.searchTestsPaged(cleanSearch, isActive, pageable);
+        List<PlacementTestResponse> dtos = testPage.getContent().stream()
+                .map(this::mapToTestResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.of(testPage, dtos);
+    }
+
+    @Transactional(readOnly = true)
     public PlacementTest getTestDetail(Long testId) {
         return placementTestRepository.findById(testId)
                 .orElseThrow(() -> new ResourceNotFoundException("PlacementTest", "testId", testId));
+    }
+
+    @Transactional(readOnly = true)
+    public PlacementTestResponse getTestDetailResponse(Long testId) {
+        PlacementTest test = getTestDetail(testId);
+        return mapToTestResponse(test);
+    }
+
+    public PlacementTestResponse mapToTestResponse(PlacementTest test) {
+        List<QuestionPassage> passages = passageRepository.findByTest_TestIdOrderByOrderIndexAsc(test.getTestId());
+        int questionCount = 0;
+        for (QuestionPassage p : passages) {
+            questionCount += questionRepository.findByPassage_PassageId(p.getPassageId()).size();
+        }
+
+        Long adminId = null;
+        String adminName = null;
+        String adminEmail = null;
+        if (test.getCreatedBy() != null) {
+            try {
+                adminId = test.getCreatedBy().getUserId();
+                adminName = test.getCreatedBy().getFullName();
+                adminEmail = test.getCreatedBy().getEmail();
+            } catch (Exception ignored) {
+            }
+        }
+
+        return PlacementTestResponse.builder()
+                .testId(test.getTestId())
+                .title(test.getTitle())
+                .description(test.getDescription())
+                .durationMinutes(test.getDurationMinutes())
+                .totalQuestions(test.getTotalQuestions())
+                .isActive(test.getIsActive())
+                .createdById(adminId)
+                .createdByName(adminName)
+                .createdByEmail(adminEmail)
+                .passageCount(passages.size())
+                .questionCount(questionCount)
+                .createdAt(test.getCreatedAt())
+                .build();
     }
 
     @Transactional

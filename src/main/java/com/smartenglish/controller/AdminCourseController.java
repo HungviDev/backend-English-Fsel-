@@ -4,6 +4,8 @@ import com.smartenglish.dto.request.CreateCourseRequest;
 import com.smartenglish.dto.request.CreateLessonExerciseRequest;
 import com.smartenglish.dto.request.CreateLessonRequest;
 import com.smartenglish.dto.response.ApiResponse;
+import com.smartenglish.dto.response.CourseResponse;
+import com.smartenglish.dto.response.PageResponse;
 import com.smartenglish.entity.Course;
 import com.smartenglish.entity.Lesson;
 import com.smartenglish.entity.LessonExercise;
@@ -36,18 +38,33 @@ public class AdminCourseController {
     private final UserRepository userRepository;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Lấy danh sách tất cả khóa học (Admin)", description = "Chỉ tài khoản ROLE_ADMIN mới có quyền gọi API này")
-    public ResponseEntity<ApiResponse<List<Course>>> getAllCourses() {
-        List<Course> courses = courseService.getAllCourses();
+    @Operation(summary = "Lấy danh sách tất cả khóa học có phân trang & tìm kiếm (Admin)",
+               description = "Hỗ trợ phân trang (page, size, sortBy, sortDir), tìm kiếm theo tiêu đề/mô tả (search), lọc theo targetLevel (A1-C2) và trạng thái hiển thị (isPublished)")
+    public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> getAllCourses(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String targetLevel,
+            @RequestParam(required = false) Boolean isPublished,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderIndex") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        PageResponse<CourseResponse> courses = courseService.getAllCoursesPaged(
+                search, targetLevel, isPublished, page, size, sortBy, sortDir);
         return ResponseEntity.ok(ApiResponse.ok("Lấy danh sách khóa học thành công", courses));
     }
 
+    @GetMapping("/{courseId}")
+    @Operation(summary = "Lấy chi tiết khóa học theo ID (Admin)")
+    public ResponseEntity<ApiResponse<CourseResponse>> getCourseDetail(@PathVariable Long courseId) {
+        Course course = courseService.getCourseById(courseId);
+        return ResponseEntity.ok(ApiResponse.ok("Lấy chi tiết khóa học thành công", courseService.mapToCourseResponse(course)));
+    }
+
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Tạo khóa học mới (Admin)", description = "Tạo khung khóa học với cấp độ mục tiêu (A1-C2)")
-    public ResponseEntity<ApiResponse<Course>> createCourse(@Valid @RequestBody CreateCourseRequest request,
-                                                            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<CourseResponse>> createCourse(@Valid @RequestBody CreateCourseRequest request,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
         Long adminId = null;
         if (userDetails != null) {
             adminId = userRepository.findByEmail(userDetails.getUsername())
@@ -57,11 +74,10 @@ public class AdminCourseController {
 
         Course course = courseService.createCourse(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Tạo khóa học thành công", course));
+                .body(ApiResponse.ok("Tạo khóa học thành công", courseService.mapToCourseResponse(course)));
     }
 
     @PostMapping("/{courseId}/lessons")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Thêm bài giảng vào khóa học (Admin)", description = "Thêm bài học kèm subSkillTag làm cơ sở dữ liệu tri thức cho RAG Engine")
     public ResponseEntity<ApiResponse<Lesson>> addLessonToCourse(@PathVariable Long courseId,
                                                                  @Valid @RequestBody CreateLessonRequest request) {
@@ -71,7 +87,6 @@ public class AdminCourseController {
     }
 
     @GetMapping("/{courseId}/lessons")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Xem danh sách bài giảng theo khóa học (Admin)")
     public ResponseEntity<ApiResponse<List<Lesson>>> getLessonsByCourse(@PathVariable Long courseId) {
         List<Lesson> lessons = courseService.getLessonsByCourse(courseId);
@@ -79,7 +94,6 @@ public class AdminCourseController {
     }
 
     @PostMapping("/lessons/{lessonId}/exercises")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Thêm câu hỏi luyện tập vào bài giảng (Admin)",
                description = "Giai đoạn 1: Admin thêm bài tập trắc nghiệm gắn với lessonId")
     public ResponseEntity<ApiResponse<LessonExercise>> addExerciseToLesson(
@@ -91,11 +105,9 @@ public class AdminCourseController {
     }
 
     @GetMapping("/lessons/{lessonId}/exercises")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Xem danh sách câu hỏi luyện tập của bài giảng (Admin)")
     public ResponseEntity<ApiResponse<List<LessonExercise>>> getExercisesByLesson(@PathVariable Long lessonId) {
         List<LessonExercise> exercises = courseService.getExercisesByLesson(lessonId);
         return ResponseEntity.ok(ApiResponse.ok("Lấy danh sách bài tập thành công", exercises));
     }
 }
-

@@ -4,6 +4,8 @@ import com.smartenglish.dto.request.CreatePlacementQuestionRequest;
 import com.smartenglish.dto.request.CreatePlacementTestRequest;
 import com.smartenglish.dto.request.CreateQuestionPassageRequest;
 import com.smartenglish.dto.response.ApiResponse;
+import com.smartenglish.dto.response.PageResponse;
+import com.smartenglish.dto.response.PlacementTestResponse;
 import com.smartenglish.entity.PlacementQuestion;
 import com.smartenglish.entity.PlacementTest;
 import com.smartenglish.entity.QuestionPassage;
@@ -39,7 +41,7 @@ public class AdminPlacementTestController {
     @PostMapping
     @Operation(summary = "Tạo đề thi đầu vào mới",
                description = "Khởi tạo thông tin chung của đề kiểm tra (thời gian làm bài, tổng số câu)")
-    public ResponseEntity<ApiResponse<PlacementTest>> createPlacementTest(
+    public ResponseEntity<ApiResponse<PlacementTestResponse>> createPlacementTest(
             @Valid @RequestBody CreatePlacementTestRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
@@ -47,21 +49,31 @@ public class AdminPlacementTestController {
                 .map(User::getUserId).orElse(null) : null;
 
         PlacementTest test = placementTestService.createPlacementTest(request, adminId);
+        PlacementTestResponse response = placementTestService.mapToTestResponse(test);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Tạo đề thi đầu vào thành công", test));
+                .body(ApiResponse.ok("Tạo đề thi đầu vào thành công", response));
     }
 
     @GetMapping
-    @Operation(summary = "Lấy danh sách tất cả đề thi (Admin)")
-    public ResponseEntity<ApiResponse<List<PlacementTest>>> getAllTests() {
-        List<PlacementTest> tests = placementTestService.getAllTests();
+    @Operation(summary = "Lấy danh sách tất cả đề thi có phân trang & tìm kiếm (Admin)",
+               description = "Hỗ trợ phân trang (page, size, sortBy, sortDir), tìm kiếm theo tiêu đề/mô tả (search) và lọc theo trạng thái kích hoạt (isActive)")
+    public ResponseEntity<ApiResponse<PageResponse<PlacementTestResponse>>> getAllTests(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean isActive,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        PageResponse<PlacementTestResponse> tests = placementTestService.getAllTestsPaged(
+                search, isActive, page, size, sortBy, sortDir);
         return ResponseEntity.ok(ApiResponse.ok("Lấy danh sách đề thi thành công", tests));
     }
 
     @GetMapping("/{testId}")
     @Operation(summary = "Lấy chi tiết đề thi theo testId")
-    public ResponseEntity<ApiResponse<PlacementTest>> getTestDetail(@PathVariable Long testId) {
-        PlacementTest test = placementTestService.getTestDetail(testId);
+    public ResponseEntity<ApiResponse<PlacementTestResponse>> getTestDetail(@PathVariable Long testId) {
+        PlacementTestResponse test = placementTestService.getTestDetailResponse(testId);
         return ResponseEntity.ok(ApiResponse.ok("Lấy chi tiết đề thi thành công", test));
     }
 
@@ -103,4 +115,3 @@ public class AdminPlacementTestController {
         return ResponseEntity.ok(ApiResponse.ok("Lấy danh sách câu hỏi thành công", questions));
     }
 }
-

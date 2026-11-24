@@ -23,74 +23,74 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManager authenticationManager;
+        private final UserRepository userRepository;
+        private final RoleRepository roleRepository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtTokenProvider jwtTokenProvider;
+        private final AuthenticationManager authenticationManager;
 
-    @Transactional
-    public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Email is already registered: " + request.getEmail());
+        @Transactional
+        public AuthResponse register(RegisterRequest request) {
+                if (userRepository.existsByEmail(request.getEmail())) {
+                        throw new AppException(HttpStatus.BAD_REQUEST,
+                                        "Email is already registered: " + request.getEmail());
+                }
+
+                Role studentRole = roleRepository.findByRoleName("ROLE_STUDENT")
+                                .orElseGet(() -> roleRepository.save(Role.builder()
+                                                .roleName("ROLE_STUDENT")
+                                                .description("Default Student Role")
+                                                .build()));
+
+                User user = User.builder()
+                                .email(request.getEmail().toLowerCase().trim())
+                                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                                .fullName(request.getFullName().trim())
+                                .role(studentRole)
+                                .isPlacementCompleted(false)
+                                .isActive(true)
+                                .build();
+
+                User savedUser = userRepository.save(user);
+                String token = jwtTokenProvider.generateToken(savedUser);
+
+                log.info("Registered new user with email: {}", savedUser.getEmail());
+
+                return AuthResponse.builder()
+                                .token(token)
+                                .tokenType("Bearer")
+                                .userId(savedUser.getUserId())
+                                .email(savedUser.getEmail())
+                                .fullName(savedUser.getFullName())
+                                .role(studentRole.getRoleName())
+                                .isPlacementCompleted(savedUser.getIsPlacementCompleted())
+                                .currentLevel(savedUser.getCurrentLevel())
+                                .build();
         }
 
-        Role studentRole = roleRepository.findByRoleName("ROLE_STUDENT")
-                .orElseGet(() -> roleRepository.save(Role.builder()
-                        .roleName("ROLE_STUDENT")
-                        .description("Default Student Role")
-                        .build()));
+        public AuthResponse login(LoginRequest request) {
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(),
+                                                request.getPassword()));
+                User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim())
+                                .orElseThrow(() -> new AppException(HttpStatus.UNAUTHORIZED,
+                                                "Invalid email or password"));
 
-        User user = User.builder()
-                .email(request.getEmail().toLowerCase().trim())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .fullName(request.getFullName().trim())
-                .role(studentRole)
-                .isPlacementCompleted(false)
-                .isActive(true)
-                .build();
+                if (!Boolean.TRUE.equals(user.getIsActive())) {
+                        throw new AppException(HttpStatus.FORBIDDEN, "Account has been deactivated");
+                }
 
-        User savedUser = userRepository.save(user);
-        String token = jwtTokenProvider.generateToken(savedUser);
+                String token = jwtTokenProvider.generateToken(user);
 
-        log.info("Registered new user with email: {}", savedUser.getEmail());
-
-        return AuthResponse.builder()
-                .token(token)
-                .tokenType("Bearer")
-                .userId(savedUser.getUserId())
-                .email(savedUser.getEmail())
-                .fullName(savedUser.getFullName())
-                .role(studentRole.getRoleName())
-                .isPlacementCompleted(savedUser.getIsPlacementCompleted())
-                .currentLevel(savedUser.getCurrentLevel())
-                .build();
-    }
-
-    public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(), request.getPassword())
-        );
-
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim())
-                .orElseThrow(() -> new AppException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
-
-        if (!Boolean.TRUE.equals(user.getIsActive())) {
-            throw new AppException(HttpStatus.FORBIDDEN, "Account has been deactivated");
+                return AuthResponse.builder()
+                                .token(token)
+                                .tokenType("Bearer")
+                                .userId(user.getUserId())
+                                .email(user.getEmail())
+                                .fullName(user.getFullName())
+                                .role(user.getRole() != null ? user.getRole().getRoleName() : "ROLE_STUDENT")
+                                .isPlacementCompleted(user.getIsPlacementCompleted())
+                                .currentLevel(user.getCurrentLevel())
+                                .build();
         }
-
-        String token = jwtTokenProvider.generateToken(user);
-
-        return AuthResponse.builder()
-                .token(token)
-                .tokenType("Bearer")
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
-                .role(user.getRole() != null ? user.getRole().getRoleName() : "ROLE_STUDENT")
-                .isPlacementCompleted(user.getIsPlacementCompleted())
-                .currentLevel(user.getCurrentLevel())
-                .build();
-    }
 }
-

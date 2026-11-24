@@ -1,5 +1,7 @@
 package com.smartenglish.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PlacementTest {
 
     @Id
@@ -38,6 +41,7 @@ public class PlacementTest {
     @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdBy")
     private User createdBy;
@@ -46,4 +50,3 @@ public class PlacementTest {
     @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
-

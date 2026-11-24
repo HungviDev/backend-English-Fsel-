@@ -1,5 +1,7 @@
 package com.smartenglish.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuestionPassage {
 
     @Id
@@ -17,6 +20,7 @@ public class QuestionPassage {
     @Column(name = "passageId")
     private Long passageId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "testId", nullable = false)
     private PlacementTest test;
@@ -37,4 +41,3 @@ public class QuestionPassage {
     @Column(name = "orderIndex", nullable = false)
     private Integer orderIndex = 0;
 }
-
