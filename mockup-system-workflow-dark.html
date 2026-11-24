@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart English AI - System Workflow & UI Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #080c14; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4); }
+    .glow-purple { box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.35); }
+    .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35); }
+    .glow-chat { box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.5); }
+  </style>
+</head>
+<body class="bg-[#070b12] text-slate-100 min-h-screen flex flex-col antialiased custom-scrollbar relative">
+
+  <!-- =============================================================== -->
+  <!-- 1. TOP HEADER & WORKFLOW STAGE STEPPER                          -->
+  <!-- =============================================================== -->
+  <header class="sticky top-0 z-40 bg-[#0b101b]/95 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-6 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+      
+      <!-- Brand & Project Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-brain text-white text-base"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-base tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-purple-400">
+              SmartEnglish Workflow
+            </span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">
+              SYSTEM_WORKFLOW.md
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400">Kiến trúc 5 Giai đoạn • LLM & RAG • Dark Obsidian Theme</p>
+        </div>
+      </div>
+
+      <!-- STAGE SELECTOR (STEPPER TABS) -->
+      <nav class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 custom-scrollbar">
+        <button onclick="goToStage(1)" id="step-btn-1" class="step-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px] flex items-center justify-center font-bold">1</span>
+          <span>Admin Setup</span>
+        </button>
+
+        <i class="fa-solid fa-chevron-right text-[10px] text-slate-700"></i>
+
+        <button onclick="goToStage(2)" id="step-btn-2" class="step-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px] flex items-center justify-center font-bold">2</span>
+          <span>Placement Gate</span>
+        </button>
+
+        <i class="fa-solid fa-chevron-right text-[10px] text-slate-700"></i>
+
+        <button onclick="goToStage(3)" id="step-btn-3" class="step-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px] flex items-center justify-center font-bold">3</span>
+          <span>Phòng Thi Test</span>
+        </button>
+
+        <i class="fa-solid fa-chevron-right text-[10px] text-slate-700"></i>
+
+        <button onclick="goToStage(4)" id="step-btn-4" class="step-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px] flex items-center justify-center font-bold">4</span>
+          <span>RAG AI Pipeline</span>
+        </button>
+
+        <i class="fa-solid fa-chevron-right text-[10px] text-slate-700"></i>
+
+        <button onclick="goToStage(5)" id="step-btn-5" class="step-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-white text-indigo-700 font-mono text-[10px] flex items-center justify-center font-bold">5</span>
+          <span>Học 2 Menu + Đổi Xu</span>
+        </button>
+      </nav>
+
+      <!-- Coins Widget -->
+      <div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold font-mono">
+        <i class="fa-solid fa-coins text-amber-400"></i>
+        <span id="header-coins">250</span> Xu
+      </div>
+    </div>
+  </header>
+
+  <!-- =============================================================== -->
+  <!-- 2. MAIN WORKFLOW STAGES CONTENT CONTAINER                       -->
+  <!-- =============================================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 pb-24">
+
+    <!-- =========================================================== -->
+    <!-- STAGE 1: KHỞI TẠO DỮ LIỆU NỀN TẢNG (ADMIN SETUP)             -->
+    <!-- =========================================================== -->
+    <section id="stage-1" class="stage-section hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-mono font-bold mb-1">
+            GIAI ĐOẠN 1: DÀNH CHO ADMIN
+          </div>
+          <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-database text-purple-400"></i> Khởi Tạo Đề Thi Đầu Vào & Kho Bài Giảng RAG
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Admin cấu hình đề thi chuẩn CEFR và kho bài học có gắn nhãn kỹ năng subSkillTag đồng bộ</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono">
+          <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">placement_tests: 1</span>
+          <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">lessons: 3</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Nhánh 1: Placement Test Engine -->
+        <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-file-signature text-indigo-400"></i> Đề thi đầu vào (placement_tests)
+            </h3>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">IS_ACTIVE = 1</span>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-200">Test ID #1: Đề kiểm tra năng lực CEFR (Nghe & Đọc)</span>
+              <span class="font-mono text-slate-400 text-[11px]">45 phút • 4 Câu</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Đánh giá phân loại từ trình độ A1 đến C1 thông qua 2 đoạn ngữ cảnh độc lập.</p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <span class="font-bold text-slate-400 text-[11px] uppercase tracking-wider">Passages & Questions cấu hình:</span>
+            <div class="p-3 rounded-xl bg-[#070b12] border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-white">Passage #1: Daily Workplace Conversation</span>
+                <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-mono text-[10px]">skillType: LISTENING</span>
+              </div>
+              <div class="pl-2 border-l-2 border-indigo-500/40 text-[11px] text-slate-400">
+                • Question #1: What time does the conference begin? | <span class="text-indigo-300 font-mono">Tag: LISTENING_DETAIL</span><br/>
+                • Question #2: Where will attendees receive badges? | <span class="text-indigo-300 font-mono">Tag: LISTENING_DETAIL</span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#070b12] border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-white">Passage #2: Environmental Science Article</span>
+                <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px]">skillType: READING</span>
+              </div>
+              <div class="pl-2 border-l-2 border-amber-500/40 text-[11px] text-slate-400">
+                • Question #3: Meaning of 'fragmentation'? | <span class="text-amber-300 font-mono">Tag: READING_VOCAB</span><br/>
+                • Question #4: Meaning of 'resilient'? | <span class="text-amber-300 font-mono">Tag: READING_VOCAB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nhánh 2: Course & RAG Ready Lessons -->
+        <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-graduation-cap text-purple-400"></i> Kho Bài Giảng Chuẩn RAG (courses & lessons)
+            </h3>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold">RAG READY</span>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-white">Course #1: B1 Intermediate English Mastery</span>
+              <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-mono text-[10px]">Level B1</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Bồi dưỡng toàn diện chuẩn CEFR B1. Các bài giảng gắn nhãn subSkillTag khớp với đề thi để AI RAG truy xuất chính xác.</p>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-[#070b12] border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="font-semibold text-white">Lesson #1: Mastering Listening Details in Everyday Conversations</div>
+                <div class="text-[10px] text-slate-400">15 phút • skillType: LISTENING</div>
+              </div>
+              <span class="px-2 py-1 rounded bg-indigo-500/10 text-indigo-400 font-mono text-[10px] font-bold">LISTENING_DETAIL</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#070b12] border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="font-semibold text-white">Lesson #2: Essential Academic Vocabulary & Collocations</div>
+                <div class="text-[10px] text-slate-400">20 phút • skillType: READING</div>
+              </div>
+              <span class="px-2 py-1 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] font-bold">READING_VOCAB</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#070b12] border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="font-semibold text-white">Lesson #3: Grammar in Action: Present Perfect vs Past Simple</div>
+                <div class="text-[10px] text-slate-400">15 phút • skillType: GRAMMAR</div>
+              </div>
+              <span class="px-2 py-1 rounded bg-purple-500/10 text-purple-400 font-mono text-[10px] font-bold">GRAMMAR_TENSE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================== -->
+    <!-- STAGE 2: PLACEMENT GATE & PHÂN QUYỀN JWT                     -->
+    <!-- =========================================================== -->
+    <section id="stage-2" class="stage-section hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-mono font-bold mb-1">
+          GIAI ĐOẠN 2: ĐĂNG NHẬP & KIỂM TRA ĐIỀU KIỆN ĐẦU VÀO
+        </div>
+        <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-amber-400"></i> Cơ Chế Cổng Chặn (Placement Gate Mechanism)
+        </h2>
+        <p class="text-xs text-slate-400 mt-0.5">Kiểm soát truy cập dựa trên JWT Claim: cờ isPlacementCompleted (0 = Bị chặn; 1 = Mở khóa toàn bộ)</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Trường hợp 1: isPlacementCompleted = 0 -->
+        <div class="bg-[#0b101b] border border-rose-500/30 rounded-2xl p-6 space-y-4 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-mono font-bold">
+              <i class="fa-solid fa-lock mr-1"></i> isPlacementCompleted == 0
+            </span>
+            <span class="text-xs text-rose-400 font-bold font-mono">HTTP 403 FORBIDDEN</span>
+          </div>
+
+          <div>
+            <h3 class="text-base font-bold text-white">Tài khoản học viên mới tạo</h3>
+            <p class="text-xs text-slate-300 mt-1">Khi học viên vừa đăng ký hoặc chưa hoàn thành bài thi đầu vào:</p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#070b12] border border-rose-500/20 text-xs text-slate-300 space-y-2">
+            <div class="flex items-center gap-2 text-rose-400 font-semibold">
+              <i class="fa-solid fa-ban"></i> Menu Lộ trình 7 ngày AI: BỊ CHẶN
+            </div>
+            <div class="flex items-center gap-2 text-rose-400 font-semibold">
+              <i class="fa-solid fa-ban"></i> Menu Khóa học & Bài giảng Admin: BỊ CHẶN
+            </div>
+            <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+              Response: <code class="text-rose-300 font-mono font-semibold">"Bạn chưa hoàn thành bài kiểm tra đầu vào. Bắt buộc làm bài test tại /api/v1/placement-tests/active trước khi học!"</code>
+            </div>
+          </div>
+
+          <button onclick="goToStage(3)" class="w-full py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition shadow flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-right"></i> Bấm để chuyển đến Phòng thi Test
+          </button>
+        </div>
+
+        <!-- Trường hợp 2: isPlacementCompleted = 1 -->
+        <div class="bg-[#0b101b] border border-emerald-500/30 rounded-2xl p-6 space-y-4 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-bold">
+              <i class="fa-solid fa-unlock mr-1"></i> isPlacementCompleted == 1
+            </span>
+            <span class="text-xs text-emerald-400 font-bold font-mono">HTTP 200 OK</span>
+          </div>
+
+          <div>
+            <h3 class="text-base font-bold text-white">Học viên đã nộp bài thi thành công</h3>
+            <p class="text-xs text-slate-300 mt-1">Sau khi nộp bài test, hệ thống cập nhật cơ sở dữ liệu và mở khóa toàn bộ:</p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#070b12] border border-emerald-500/20 text-xs text-slate-300 space-y-2">
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold">
+              <i class="fa-solid fa-circle-check"></i> Menu Lộ trình 7 ngày AI: ĐÃ MỞ KHÓA
+            </div>
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold">
+              <i class="fa-solid fa-circle-check"></i> Menu Khóa học Admin: ĐÃ MỞ KHÓA
+            </div>
+            <div class="flex items-center gap-2 text-emerald-400 font-semibold">
+              <i class="fa-solid fa-circle-check"></i> Cửa hàng Đổi xu nhận quà: ĐÃ MỞ KHÓA
+            </div>
+          </div>
+
+          <button onclick="goToStage(5)" class="w-full py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition shadow flex items-center justify-center gap-2">
+            <i class="fa-solid fa-graduation-cap"></i> Khám phá Menu Học tập & Đổi quà
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================== -->
+    <!-- STAGE 3: HỌC VIÊN LÀM BÀI TEST ĐẦU VÀO                      -->
+    <!-- =========================================================== -->
+    <section id="stage-3" class="stage-section hidden space-y-6">
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-mono font-bold mb-1">
+            GIAI ĐOẠN 3: LƯỢT THI ATTEMPT #3
+          </div>
+          <h2 class="text-lg md:text-xl font-extrabold text-white">Phòng Thi Placement Test Trực Tuyến</h2>
+          <p class="text-xs text-slate-400">API: POST /start khởi tạo lượt thi • POST /answers lưu lựa chọn và tự so khớp isCorrect</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="bg-[#070b12] px-4 py-2 rounded-xl border border-slate-800 font-mono text-amber-400 text-sm font-bold">
+            <i class="fa-regular fa-clock mr-1.5"></i> 34:12
+          </div>
+          <button onclick="goToStage(4)" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-paper-plane"></i> Nộp Bài & Kích Hoạt RAG AI
+          </button>
+        </div>
+      </div>
+
+      <!-- SPLIT VIEW TEST ROOM -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- PASSAGE -->
+        <div class="lg:col-span-7 bg-[#0b101b] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">LISTENING</span>
+              <h3 class="font-bold text-white text-sm">Part 1: Daily Workplace Conversation</h3>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">Audio ID #1</span>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span>sample_placement_l1.mp3</span>
+              <span class="font-mono text-indigo-400">01:10 / 02:45</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs shadow"><i class="fa-solid fa-play"></i></button>
+              <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-indigo-500 h-full w-[40%] rounded-full"></div>
+              </div>
+              <i class="fa-solid fa-volume-high text-slate-400 text-xs"></i>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-300 leading-relaxed bg-[#070b12]/60 p-4 rounded-xl border border-slate-800/60 space-y-2">
+            <span class="font-bold text-slate-400 uppercase text-[10px] tracking-wider block">Ngữ cảnh đoạn thoại:</span>
+            <p>Speaker A invites Speaker B to the upcoming international project conference. They confirm the scheduled meeting time and the exact location for attendee badge collection.</p>
+          </div>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="lg:col-span-5 bg-[#0b101b] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold text-indigo-400 font-mono">CÂU HỎI 1 / 4</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">Tag: LISTENING_DETAIL</span>
+          </div>
+
+          <p class="text-sm font-semibold text-white">What time is the international conference scheduled to begin?</p>
+
+          <div class="space-y-2 text-xs">
+            <div class="p-3 rounded-xl border border-slate-800 bg-[#070b12] text-slate-300 flex items-center gap-2">
+              <span class="font-mono text-slate-400">A.</span> 8:30 AM
+            </div>
+            <div class="p-3 rounded-xl border border-indigo-500/50 bg-indigo-950/20 text-white font-semibold flex items-center justify-between">
+              <div><span class="font-mono text-indigo-400 mr-2">B.</span> 9:30 AM</div>
+              <i class="fa-solid fa-circle-check text-indigo-400"></i>
+            </div>
+            <div class="p-3 rounded-xl border border-slate-800 bg-[#070b12] text-slate-300 flex items-center gap-2">
+              <span class="font-mono text-slate-400">C.</span> 10:00 AM
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Đã lưu: <strong class="text-emerald-400">4 / 4 câu</strong></span>
+            <button onclick="goToStage(4)" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500">
+              Nộp bài (Submit)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================== -->
+    <!-- STAGE 4: RAG AI PIPELINE & SINH LỘ TRÌNH 7 NGÀY             -->
+    <!-- =========================================================== -->
+    <section id="stage-4" class="stage-section hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-mono font-bold mb-1">
+          GIAI ĐOẠN 4: THỐNG KÊ ĐIỂM YẾU & KÍCH HOẠT RAG AI
+        </div>
+        <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+          <i class="fa-solid fa-microchip-ai text-purple-400"></i> Quy Trình RAG + LLM Sinh Lộ Trình 7 Ngày
+        </h2>
+        <p class="text-xs text-slate-400 mt-0.5">Xử lý tự động trong 1 Transaction: Tính điểm -> Phân tích điểm yếu -> RAG Retrieval -> LLM JSON -> Lưu DB</p>
+      </div>
+
+      <!-- 4 BƯỚC RAG VISUAL PIPELINE -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Bước 1 -->
+        <div class="p-4 rounded-2xl bg-[#0b101b] border border-slate-800 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold text-xs">1</div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Chấm Điểm & Phân Tích</h4>
+          <p class="text-[11px] text-slate-400">Nghe: 50% | Đọc: 50% | Tổng: 50% -> <strong class="text-indigo-400 font-mono">Level B1</strong>.</p>
+          <div class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2 py-1 rounded">
+            weakness: ["LISTENING_DETAIL", "READING_VOCAB"]
+          </div>
+        </div>
+
+        <!-- Bước 2 -->
+        <div class="p-4 rounded-2xl bg-[#0b101b] border border-slate-800 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-bold text-xs">2</div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">RAG Retrieval</h4>
+          <p class="text-[11px] text-slate-400">Truy vấn bài giảng giáo viên khớp với nhãn lỗi sai:</p>
+          <div class="text-[10px] font-mono text-purple-300 bg-purple-500/10 px-2 py-1 rounded">
+            Found: Lesson #1 & Lesson #2
+          </div>
+        </div>
+
+        <!-- Bước 3 -->
+        <div class="p-4 rounded-2xl bg-[#0b101b] border border-slate-800 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-xs">3</div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">LLM Generation</h4>
+          <p class="text-[11px] text-slate-400">Gemini 1.5 Flash sinh JSON 7 ngày theo schema chuẩn:</p>
+          <div class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">
+            focusSkill: LISTENING | READING
+          </div>
+        </div>
+
+        <!-- Bước 4 -->
+        <div class="p-4 rounded-2xl bg-[#0b101b] border border-slate-800 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center font-bold text-xs">4</div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Lưu DB & Mở Khóa</h4>
+          <p class="text-[11px] text-slate-400">Lưu vào 3 bảng và mở cờ điều kiện học tập:</p>
+          <div class="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-1 rounded">
+            isPlacementCompleted = 1
+          </div>
+        </div>
+      </div>
+
+      <!-- KẾT QUẢ SINH RA -->
+      <div class="bg-[#0b101b] border border-indigo-500/30 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 glow-indigo">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">THÀNH CÔNG</span>
+            <h3 class="text-base font-bold text-white">Đã Tạo Xong Lộ Trình ID #1: Bứt phá kỹ năng Nghe & Từ vựng</h3>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Lộ trình gồm 7 ngày (Day 1..7). Ngày 1 đã được mở khóa tự động (isUnlocked = 1). Điểm thưởng hoàn thành: +50 Xu.</p>
+        </div>
+        <button onclick="goToStage(5)" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-500 shadow flex items-center gap-2 whitespace-nowrap">
+          Vào Học Menu 1 & Menu 2 <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================== -->
+    <!-- STAGE 5: HỌC TẬP TRÊN 2 MENU CHÍNH & CỬA HÀNG ĐỔI XU        -->
+    <!-- =========================================================== -->
+    <section id="stage-5" class="stage-section space-y-6">
+      
+      <!-- SUB-NAVIGATION INSIDE STAGE 5 -->
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-mono font-bold mb-1">
+            GIAI ĐOẠN 5: GIAO DIỆN HỌC VIÊN HOÀN CHỈNH
+          </div>
+          <h2 class="text-xl font-extrabold text-white">Hệ Thống Học Tập 2 Menu & Cửa Hàng Đổi Xu</h2>
+        </div>
+
+        <div class="flex items-center bg-slate-900 border border-slate-800 p-1 rounded-xl">
+          <button onclick="switchStage5SubTab('menu1')" id="sub-btn-menu1" class="sub-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow">
+            <i class="fa-solid fa-compass mr-1"></i> Menu 1: Lộ Trình AI (7 Days)
+          </button>
+          <button onclick="switchStage5SubTab('menu2')" id="sub-btn-menu2" class="sub-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-graduation-cap mr-1"></i> Menu 2: Khóa Học Admin
+          </button>
+          <button onclick="switchStage5SubTab('menu3')" id="sub-btn-menu3" class="sub-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-gift mr-1 text-amber-400"></i> Menu 3: Đổi Xu Lấy Quà
+          </button>
+        </div>
+      </div>
+
+      <!-- SUBTAB 1: MENU 1 - LỘ TRÌNH 7 NGÀY AI -->
+      <div id="subtab-menu1" class="subtab-content space-y-4">
+        <!-- Day 1 Card -->
+        <div class="bg-[#0b101b] border border-indigo-500/30 rounded-2xl overflow-hidden shadow-lg">
+          <div class="bg-indigo-950/20 px-5 py-3.5 border-b border-indigo-500/20 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center">D1</div>
+              <div>
+                <span class="font-bold text-white text-sm">Ngày 1: Chiến lược bắt từ khóa (Keywords) trong hội thoại ngắn</span>
+                <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">LISTENING</span>
+              </div>
+            </div>
+            <div class="text-xs font-mono text-emerald-400">
+              <i class="fa-solid fa-unlock mr-1"></i> Đang mở khóa • +30 Xu khi hoàn thành
+            </div>
+          </div>
+
+          <div class="p-4 space-y-3">
+            <!-- Task 1 (LESSON) -->
+            <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400">LESSON</span>
+                    <span class="text-xs font-semibold text-slate-400 line-through">Bài giảng trọng tâm: Phương pháp bắt từ khóa nghe chi tiết</span>
+                  </div>
+                  <span class="text-[11px] text-slate-500">Tham chiếu Lesson #1 của Admin • 15 phút</span>
+                </div>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded">Đã xong (+15 Xu)</span>
+            </div>
+
+            <!-- Task 2 (PRACTICE) -->
+            <div class="p-3.5 rounded-xl bg-[#070b12] border border-indigo-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <i class="fa-regular fa-circle text-indigo-400 mt-0.5"></i>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-400">PRACTICE</span>
+                    <span class="text-xs font-semibold text-white">Luyện tập phản xạ AI: Nhận diện từ khóa với 5 câu thoại tốc độ chuẩn</span>
+                  </div>
+                  <span class="text-[11px] text-indigo-400">Dictation Exercise • 20 phút</span>
+                </div>
+              </div>
+              <button onclick="completeDay1Practice()" id="btn-complete-task" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow">
+                Hoàn thành (+15 Xu)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 2 (Unlocked) -->
+        <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs flex items-center justify-center">D2</div>
+            <div>
+              <div class="text-xs font-bold text-white">Ngày 2: Mở rộng vốn từ vựng Chủ đề Môi trường & Khoa học</div>
+              <div class="text-[10px] text-slate-400 font-mono">READING • 20 Academic Collocations</div>
+            </div>
+          </div>
+          <span class="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded border border-indigo-500/20">Đã mở khóa</span>
+        </div>
+
+        <!-- Day 3..7 Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+          <div class="p-3 rounded-xl bg-[#0b101b]/50 border border-slate-800/60 opacity-60 text-xs">
+            <div class="font-bold text-slate-400 flex items-center justify-between">Day 3 <i class="fa-solid fa-lock text-[10px]"></i></div>
+            <div class="text-[11px] text-slate-400 mt-1">Bẫy thông tin đối lập</div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#0b101b]/50 border border-slate-800/60 opacity-60 text-xs">
+            <div class="font-bold text-slate-400 flex items-center justify-between">Day 4 <i class="fa-solid fa-lock text-[10px]"></i></div>
+            <div class="text-[11px] text-slate-400 mt-1">Đoán nghĩa qua ngữ cảnh</div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#0b101b]/50 border border-slate-800/60 opacity-60 text-xs">
+            <div class="font-bold text-slate-400 flex items-center justify-between">Day 5 <i class="fa-solid fa-lock text-[10px]"></i></div>
+            <div class="text-[11px] text-slate-400 mt-1">Nghe số liệu & ngày tháng</div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#0b101b]/50 border border-slate-800/60 opacity-60 text-xs">
+            <div class="font-bold text-slate-400 flex items-center justify-between">Day 6 <i class="fa-solid fa-lock text-[10px]"></i></div>
+            <div class="text-[11px] text-slate-400 mt-1">Ôn tập Từ vựng - Nghe</div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#0b101b]/50 border border-slate-800/60 opacity-60 text-xs">
+            <div class="font-bold text-slate-400 flex items-center justify-between">Day 7 <i class="fa-solid fa-lock text-[10px]"></i></div>
+            <div class="text-[11px] text-slate-400 mt-1">Mini-Test đánh giá</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 2: MENU 2 - KHÓA HỌC ADMIN -->
+      <div id="subtab-menu2" class="subtab-content hidden space-y-4">
+        <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-400">LEVEL B1</span>
+              <h3 class="text-base font-bold text-white mt-1">Khóa học B1 Intermediate English Mastery</h3>
+            </div>
+            <span class="text-xs font-mono text-emerald-400">user_lesson_progress: COMPLETED</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold text-white">Lesson #1: Mastering Listening Details in Everyday Conversations</span>
+                <div class="text-[11px] text-slate-400">15 phút • LISTENING_DETAIL</div>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded">Điểm ôn tập: 100/100</span>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-[#070b12] border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold text-white">Lesson #2: Essential Academic Vocabulary & Collocations</span>
+                <div class="text-[11px] text-slate-400">20 phút • READING_VOCAB</div>
+              </div>
+              <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded">status: IN_PROGRESS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBTAB 3: MENU 3 - ĐỔI XU LẤY QUÀ -->
+      <div id="subtab-menu3" class="subtab-content hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400">Tích lũy xu từ nhiệm vụ học tập để đổi các phần quà độc quyền:</span>
+          <div class="text-xs font-mono text-amber-300 font-bold">Số dư: <span id="store-coins">250</span> Xu</div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Item 1 -->
+          <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:border-amber-500/40 transition">
+            <div class="space-y-1.5">
+              <i class="fa-solid fa-ticket text-indigo-400 text-lg"></i>
+              <h4 class="text-xs font-bold text-white">Voucher Giảm 50% Khóa B2 Pro</h4>
+              <p class="text-[11px] text-slate-400">Giảm giá trực tiếp khi đăng ký học nâng cao có mentor chấm bài.</p>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-mono font-bold text-xs">150 Xu</span>
+              <button onclick="buyReward('Voucher 50% B2 Pro', 150)" class="px-3 py-1 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500">Đổi quà</button>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:border-amber-500/40 transition">
+            <div class="space-y-1.5">
+              <i class="fa-solid fa-file-pdf text-emerald-400 text-lg"></i>
+              <h4 class="text-xs font-bold text-white">Ebook 500 Collocations (PDF)</h4>
+              <p class="text-[11px] text-slate-400">Tuyển tập 500 cụm từ học thuật kèm audio phát âm chuẩn.</p>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-mono font-bold text-xs">80 Xu</span>
+              <button onclick="buyReward('Ebook 500 Collocations', 80)" class="px-3 py-1 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500">Đổi quà</button>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bg-[#0b101b] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:border-amber-500/40 transition">
+            <div class="space-y-1.5">
+              <i class="fa-solid fa-shirt text-purple-400 text-lg"></i>
+              <h4 class="text-xs font-bold text-white">Áo Hoodie SmartEnglish</h4>
+              <p class="text-[11px] text-slate-400">Áo cotton cao cấp dành riêng cho học viên xuất sắc.</p>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-mono font-bold text-xs">300 Xu</span>
+              <button onclick="buyReward('Áo Hoodie SmartEnglish', 300)" class="px-3 py-1 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500">Đổi quà</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =============================================================== -->
+  <!-- 3. GÓC DƯỚI BÊN PHẢI: AI ENGLISH TUTOR CHATBOX (FLOATING)      -->
+  <!-- =============================================================== -->
+  
+  <!-- FLOATING CHAT BUTTON -->
+  <div class="fixed bottom-5 right-5 z-50">
+    <button onclick="toggleChatbox()" id="chat-fab-btn" class="w-13 h-13 px-4 py-3.5 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-600 text-white shadow-xl shadow-indigo-600/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5 border border-indigo-400/30 glow-indigo">
+      <div class="relative">
+        <i class="fa-solid fa-robot text-lg"></i>
+        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900 animate-pulse"></span>
+      </div>
+      <span class="text-xs font-bold tracking-wide pr-1">Hỏi AI Tutor</span>
+    </button>
+  </div>
+
+  <!-- FLOATING CHATBOX WINDOW -->
+  <div id="ai-chatbox-window" class="fixed bottom-20 right-5 z-50 w-[360px] sm:w-[400px] h-[540px] max-h-[85vh] bg-[#0c121e]/95 backdrop-blur-xl border border-indigo-500/40 rounded-2xl shadow-2xl glow-chat flex flex-col overflow-hidden hidden animate-fade-in">
+    
+    <!-- Chat Header -->
+    <div class="bg-gradient-to-r from-indigo-950/80 via-slate-900 to-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm shadow">
+          <i class="fa-solid fa-sparkles"></i>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-white flex items-center gap-1.5">
+            <span>Smart English AI Tutor</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          </div>
+          <p class="text-[10px] text-slate-400 font-mono">Gemini 1.5 Flash • Context: B1 Roadmap</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 text-slate-400">
+        <button onclick="clearChatHistory()" title="Xóa hội thoại" class="w-7 h-7 rounded-lg hover:bg-slate-800 hover:text-white flex items-center justify-center text-xs transition"><i class="fa-solid fa-rotate-right"></i></button>
+        <button onclick="toggleChatbox()" title="Đóng" class="w-7 h-7 rounded-lg hover:bg-slate-800 hover:text-white flex items-center justify-center text-xs transition"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <!-- Chat Messages Scroll Area -->
+    <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3.5 text-xs">
+      
+      <!-- Bot Message 1 -->
+      <div class="flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-xs">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-sm p-3 text-slate-200 leading-relaxed space-y-1.5 max-w-[85%]">
+          <p>Xin chào <strong>Nguyễn Văn Học</strong>! 👋</p>
+          <p>Tôi là trợ lý AI đồng hành của bạn. Tôi đã nắm rõ kết quả bài test đầu vào (Level B1) và điểm yếu <strong>LISTENING_DETAIL</strong> của bạn. Tôi có thể giúp bạn giải đáp ngữ pháp, bẫy nghe hoặc gợi ý từ vựng 24/7!</p>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Suggestion Pills -->
+      <div class="space-y-1.5 pl-9">
+        <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Gợi ý câu hỏi nhanh:</span>
+        <div class="flex flex-col gap-1.5">
+          <button onclick="sendQuickPrompt('Giải thích bẫy bắt từ khóa trong Task 2 Ngày 1')" class="text-left px-2.5 py-1.5 rounded-lg bg-[#070b12] border border-slate-800 hover:border-indigo-500/40 text-[11px] text-slate-300 hover:text-indigo-300 transition">
+            💡 <em>"Giải thích bẫy bắt từ khóa trong Task 2 Ngày 1"</em>
+          </button>
+          <button onclick="sendQuickPrompt('Cho tôi 3 collocations phổ biến của từ Sustainable')" class="text-left px-2.5 py-1.5 rounded-lg bg-[#070b12] border border-slate-800 hover:border-indigo-500/40 text-[11px] text-slate-300 hover:text-indigo-300 transition">
+            📖 <em>"Cho tôi 3 collocations phổ biến của từ 'Sustainable'"</em>
+          </button>
+          <button onclick="sendQuickPrompt('Làm sao để kiếm thêm xu đổi Voucher B2 Pro?')" class="text-left px-2.5 py-1.5 rounded-lg bg-[#070b12] border border-slate-800 hover:border-indigo-500/40 text-[11px] text-slate-300 hover:text-indigo-300 transition">
+            🪙 <em>"Làm sao để kiếm thêm xu đổi Voucher B2 Pro?"</em>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chat Input Form -->
+    <div class="p-3 border-t border-slate-800/80 bg-slate-950/80">
+      <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
+        <input type="text" id="chat-input" placeholder="Nhập câu hỏi tiếng Anh hoặc bài tập..." class="flex-1 bg-[#070b12] border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition font-sans">
+        <button type="submit" class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-500 transition shadow shrink-0">
+          <i class="fa-solid fa-paper-plane text-xs"></i>
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- =============================================================== -->
+  <!-- 4. JAVASCRIPT: WORKFLOW NAVIGATION & CHATBOX LOGIC              -->
+  <!-- =============================================================== -->
+  <script>
+    let currentStage = 5;
+    let coins = 250;
+
+    function goToStage(stageNum) {
+      currentStage = stageNum;
+
+      // Update Sections
+      document.querySelectorAll('.stage-section').forEach(el => el.classList.add('hidden'));
+      const targetSec = document.getElementById('stage-' + stageNum);
+      if (targetSec) targetSec.classList.remove('hidden');
+
+      // Update Stepper Buttons
+      document.querySelectorAll('.step-btn').forEach((btn, idx) => {
+        const num = idx + 1;
+        const circle = btn.querySelector('span');
+        if (num === stageNum) {
+          btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
+          btn.classList.remove('text-slate-400');
+          if (circle) {
+            circle.classList.add('bg-white', 'text-indigo-700');
+            circle.classList.remove('bg-slate-800', 'text-slate-300');
+          }
+        } else {
+          btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
+          btn.classList.add('text-slate-400');
+          if (circle) {
+            circle.classList.remove('bg-white', 'text-indigo-700');
+            circle.classList.add('bg-slate-800', 'text-slate-300');
+          }
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchStage5SubTab(tabName) {
+      document.querySelectorAll('.subtab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-400');
+      });
+
+      const targetSub = document.getElementById('subtab-' + tabName);
+      const targetBtn = document.getElementById('sub-btn-' + tabName);
+
+      if (targetSub) targetSub.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.add('bg-indigo-600', 'text-white', 'shadow');
+        targetBtn.classList.remove('text-slate-400');
+      }
+    }
+
+    function completeDay1Practice() {
+      const btn = document.getElementById('btn-complete-task');
+      btn.textContent = 'Đã hoàn thành';
+      btn.disabled = true;
+      btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+      btn.classList.add('bg-emerald-600', 'cursor-not-allowed');
+
+      coins += 15;
+      updateCoinsUI();
+      alert('Tuyệt vời! Bạn vừa hoàn thành nhiệm vụ thực hành AI Ngày 1, nhận thêm +15 Xu và mở khóa trọn vẹn Ngày 2!');
+    }
+
+    function buyReward(name, cost) {
+      if (coins >= cost) {
+        coins -= cost;
+        updateCoinsUI();
+        alert(`Chúc mừng! Bạn đã đổi thành công phần quà "${name}" với giá ${cost} Xu.`);
+      } else {
+        alert(`Bạn còn thiếu ${cost - coins} Xu để đổi quà này. Hãy tiếp tục làm nhiệm vụ học tập nhé!`);
+      }
+    }
+
+    function updateCoinsUI() {
+      document.getElementById('header-coins').textContent = coins;
+      document.getElementById('store-coins').textContent = coins;
+    }
+
+    // --- CHATBOX FUNCTIONS ---
+    function toggleChatbox() {
+      const chatWin = document.getElementById('ai-chatbox-window');
+      chatWin.classList.toggle('hidden');
+    }
+
+    function sendQuickPrompt(promptText) {
+      const input = document.getElementById('chat-input');
+      input.value = promptText;
+      processUserMessage(promptText);
+      input.value = '';
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      processUserMessage(text);
+      input.value = '';
+    }
+
+    function processUserMessage(userText) {
+      const container = document.getElementById('chat-messages-container');
+
+      // Append User Message
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-end';
+      userBubble.innerHTML = `
+        <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-sm p-3 text-xs leading-relaxed max-w-[85%] shadow">
+          ${userText}
+        </div>
+      `;
+      container.appendChild(userBubble);
+      container.scrollTop = container.scrollHeight;
+
+      // Simulate Bot Thinking & Response
+      setTimeout(() => {
+        let reply = "Tôi đã ghi nhận câu hỏi của bạn. Trong bài học này, trọng tâm của bạn là kỹ năng Nghe chi tiết (LISTENING_DETAIL) và mở rộng vốn từ vựng học thuật. Hãy chú ý các từ khóa nhấn âm và liên từ chuyển ý nhé!";
+        
+        if (userText.toLowerCase().includes('task') || userText.toLowerCase().includes('từ khóa')) {
+          reply = "Trong Task 2 Ngày 1, bài nghe thường đánh bẫy bằng cách đưa ra mốc thời gian gây nhiễu (ví dụ: 'The original plan was 8:30 AM, however it is delayed to 9:30 AM'). Bạn chỉ cần bắt liên từ <strong>'however'</strong> để chọn phương án chuẩn xác nhất!";
+        } else if (userText.toLowerCase().includes('sustainable') || userText.toLowerCase().includes('collocation')) {
+          reply = "3 Collocations học thuật chuẩn CEFR B1-B2 của <strong>'Sustainable'</strong>:<br/>1. <em>Sustainable development</em> (Phát triển bền vững)<br/>2. <em>Sustainable agriculture/farming</em> (Nông nghiệp bền vững)<br/>3. <em>Sustainable practices</em> (Các phương pháp thực hành bền vững)";
+        } else if (userText.toLowerCase().includes('xu') || userText.toLowerCase().includes('b2')) {
+          reply = "Để đổi Voucher B2 Pro (150 Xu), bạn chỉ cần hoàn thành 2 nhiệm vụ Ngày 1 (+30 Xu) và hoàn tất các bài tập trắc nghiệm trong Menu Khóa học Admin (+20 Xu mỗi bài)!";
+        }
+
+        const botBubble = document.createElement('div');
+        botBubble.className = 'flex items-start gap-2.5';
+        botBubble.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-xs">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-sm p-3 text-slate-200 leading-relaxed max-w-[85%] space-y-1">
+            <p>${reply}</p>
+          </div>
+        `;
+        container.appendChild(botBubble);
+        container.scrollTop = container.scrollHeight;
+      }, 600);
+    }
+
+    function clearChatHistory() {
+      const container = document.getElementById('chat-messages-container');
+      container.innerHTML = `
+        <div class="flex items-start gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 text-xs">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-sm p-3 text-slate-200 leading-relaxed max-w-[85%]">
+            <p>Hội thoại đã được làm mới. Tôi sẵn sàng giải đáp thắc mắc tiếp theo của bạn!</p>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

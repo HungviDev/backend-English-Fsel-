@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart English AI - Interactive Dark Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0b0f19; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4); }
+    .glow-gold { box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.35); }
+    .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35); }
+  </style>
+</head>
+<body class="bg-[#080c14] text-slate-100 min-h-screen flex flex-col antialiased custom-scrollbar">
+
+  <!-- TOPBAR -->
+  <header class="sticky top-0 z-50 bg-[#0c121e]/90 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <i class="fa-solid fa-graduation-cap text-white text-base"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-base tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-purple-400">SmartEnglish AI</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">RAG v2.0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COIN WALLET & ROLE TOGGLE -->
+    <div class="flex items-center gap-3">
+      <div id="coin-wallet" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold glow-gold">
+        <i class="fa-solid fa-coins text-amber-400"></i>
+        <span id="user-coins">250</span>
+        <span class="text-[10px] text-amber-400/70 font-normal">Xu</span>
+      </div>
+
+      <div class="flex items-center bg-slate-900 border border-slate-800 p-0.5 rounded-xl">
+        <button onclick="setRole('STUDENT')" id="role-btn-student" class="px-3 py-1 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow">
+          <i class="fa-solid fa-user-graduate mr-1"></i> Học viên
+        </button>
+        <button onclick="setRole('ADMIN')" id="role-btn-admin" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Quản trị
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCREEN 1: BÀI THI PLACEMENT TEST BAN ĐẦU -->
+  <section id="screen-placement-test" class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[11px] font-mono font-bold mb-1">
+          <i class="fa-solid fa-bolt"></i> GIAI ĐOẠN 3: BÀI TEST PHÂN LOẠI ĐẦU VÀO
+        </div>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white">Bài Đánh Giá Năng Lực Chuẩn Đoán (Nghe & Đọc)</h1>
+        <p class="text-xs text-slate-400 mt-1">Hoàn thành bài thi để AI phân tích lỗ hổng kiến thức, xếp loại CEFR và tự động kích hoạt Lộ trình học 7 ngày riêng cho bạn.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="bg-[#080c14] px-4 py-2 rounded-xl border border-slate-800 font-mono text-amber-400 flex items-center gap-2">
+          <i class="fa-regular fa-clock"></i>
+          <span class="text-base font-bold">29:45</span>
+        </div>
+        <button onclick="submitPlacementTest()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs hover:from-emerald-500 transition-all shadow-lg shadow-emerald-600/30 flex items-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Nộp Bài & Nhận Kết Quả
+        </button>
+      </div>
+    </div>
+
+    <!-- TEST INTERACTION -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-7 bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <span class="px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-mono font-bold">
+            <i class="fa-solid fa-headphones mr-1"></i> PART 1: DAILY CONVERSATION
+          </span>
+          <span class="text-xs text-slate-400">Audio Simulation</span>
+        </div>
+        <div class="p-4 rounded-xl bg-[#080c14] border border-slate-800/80 space-y-3">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span>Conference_Schedule_Briefing.mp3</span>
+            <span class="font-mono text-indigo-400">00:45 / 02:10</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-500 shadow"><i class="fa-solid fa-play text-xs"></i></button>
+            <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div class="bg-indigo-500 h-full w-[35%] rounded-full"></div>
+            </div>
+            <i class="fa-solid fa-volume-high text-slate-400 text-xs"></i>
+          </div>
+        </div>
+        <div class="text-xs text-slate-300 leading-relaxed bg-[#080c14]/50 p-4 rounded-xl border border-slate-800/50 space-y-2">
+          <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider">Tóm tắt ngữ cảnh nghe:</p>
+          <p>Hai đồng nghiệp đang thảo luận về lịch trình chuẩn bị hội thảo quốc tế vào sáng thứ Tư tuần sau. Người nói giải thích chi tiết thời gian check-in và vị trí nhận tài liệu tại bàn lễ tân chính.</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <span class="text-xs font-bold text-indigo-400 font-mono">CÂU HỎI 1 / 4</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Tag: LISTENING_DETAIL</span>
+        </div>
+        <p class="text-sm font-semibold text-white">What time does the main conference officially begin?</p>
+        <div class="space-y-2.5 text-xs">
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-800 bg-[#080c14] hover:border-slate-700 cursor-pointer transition">
+            <input type="radio" name="pt_q1" value="A" class="text-indigo-600">
+            <span><strong>A.</strong> 08:30 AM</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-indigo-500/50 bg-indigo-950/20 cursor-pointer transition">
+            <input type="radio" name="pt_q1" value="B" checked class="text-indigo-600">
+            <span class="text-white"><strong>B.</strong> 09:30 AM (Đã chọn)</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-800 bg-[#080c14] hover:border-slate-700 cursor-pointer transition">
+            <input type="radio" name="pt_q1" value="C" class="text-indigo-600">
+            <span><strong>C.</strong> 10:00 AM</span>
+          </label>
+        </div>
+        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+          <span class="text-xs text-slate-400">Đã trả lời: <strong class="text-emerald-400">4/4 câu</strong></span>
+          <button onclick="submitPlacementTest()" class="px-4 py-2 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow">
+            Nộp bài ngay
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL: KẾT QUẢ ĐÁNH GIÁ TRÌNH ĐỘ -->
+  <div id="modal-test-result" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#0c121e] border border-indigo-500/30 rounded-2xl max-w-xl w-full p-6 md:p-8 space-y-6 glow-indigo relative animate-fade-in">
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-600 text-white flex items-center justify-center mx-auto text-2xl shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white">Chúc Mừng Bạn Đã Hoàn Thành Bài Thi!</h2>
+        <p class="text-xs text-slate-400">Kết quả đánh giá trình độ và Lộ trình học 7 ngày đã được AI khởi tạo</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 text-center bg-[#080c14] p-4 rounded-xl border border-slate-800">
+        <div>
+          <span class="text-[10px] text-slate-400 uppercase font-semibold">Xếp loại CEFR</span>
+          <div class="text-2xl font-extrabold text-indigo-400 mt-1">Level B1</div>
+        </div>
+        <div class="border-x border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase font-semibold">Điểm Bài Thi</span>
+          <div class="text-2xl font-extrabold text-emerald-400 mt-1">75/100</div>
+        </div>
+        <div>
+          <span class="text-[10px] text-slate-400 uppercase font-semibold">Thưởng Hoàn Thành</span>
+          <div class="text-2xl font-extrabold text-amber-400 mt-1 flex items-center justify-center gap-1">
+            <i class="fa-solid fa-coins text-sm"></i> +50 Xu
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-slate-300">Phân tích điểm yếu trọng tâm cần cải thiện:</span>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono font-medium">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> LISTENING_DETAIL (Nghe chi tiết)
+          </span>
+          <span class="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-medium">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> READING_VOCAB (Từ vựng học thuật)
+          </span>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/20 text-xs text-indigo-300 leading-relaxed">
+        <i class="fa-solid fa-sparkles text-indigo-400 mr-1.5"></i>
+        <strong>RAG Engine:</strong> Đã tự động kết nối 3 bài giảng của giáo viên và tổng hợp 8 bài tập luyện phản xạ AI vào Lộ trình 7 ngày của bạn!
+      </div>
+
+      <button onclick="enterMainApp()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white font-bold text-sm hover:from-indigo-500 transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+        Vào Hệ Thống Học Tập Chính <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: MAIN APP -->
+  <div id="screen-main-app" class="flex-1 flex max-w-7xl w-full mx-auto hidden">
+    <!-- SIDEBAR -->
+    <aside class="w-64 border-r border-slate-800/80 bg-[#0c121e] p-4 flex flex-col justify-between hidden md:flex">
+      <div class="space-y-6">
+        <div class="p-3.5 rounded-xl bg-[#080c14] border border-slate-800 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">H</div>
+          <div>
+            <div class="text-xs font-bold text-white">Nguyễn Văn Học</div>
+            <div class="text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i>Trình độ: B1</div>
+          </div>
+        </div>
+
+        <!-- STUDENT MENU -->
+        <div id="sidebar-student-menu" class="space-y-1">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3">Giao diện Học viên</span>
+          <button onclick="switchAppTab('profile')" id="nav-profile" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-user text-sm w-4"></i> Menu Tôi (Hồ sơ)
+          </button>
+          <button onclick="switchAppTab('roadmap')" id="nav-roadmap" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition">
+            <i class="fa-solid fa-compass text-sm w-4"></i> Menu 1: Lộ trình 7 ngày (AI)
+          </button>
+          <button onclick="switchAppTab('courses')" id="nav-courses" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-book text-sm w-4"></i> Menu 2: Khóa học Admin
+          </button>
+          <button onclick="switchAppTab('rewards')" id="nav-rewards" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <span class="flex items-center gap-3">
+              <i class="fa-solid fa-gift text-sm w-4 text-amber-400"></i> Đổi xu lấy quà
+            </span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">HOT</span>
+          </button>
+        </div>
+
+        <!-- ADMIN MENU -->
+        <div id="sidebar-admin-menu" class="space-y-1 hidden">
+          <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider px-3">Cổng Quản trị viên (CMS)</span>
+          <button onclick="switchAppTab('adm-students')" id="nav-adm-students" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-users text-sm w-4"></i> Quản lý Học sinh
+          </button>
+          <button onclick="switchAppTab('adm-tests')" id="nav-adm-tests" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-file-circle-check text-sm w-4"></i> Quản lý Bài thi đầu vào
+          </button>
+          <button onclick="switchAppTab('adm-roadmaps')" id="nav-adm-roadmaps" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-route text-sm w-4"></i> Quản lý Lộ trình học
+          </button>
+          <button onclick="switchAppTab('adm-rewards')" id="nav-adm-rewards" class="nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+            <i class="fa-solid fa-boxes-packing text-sm w-4"></i> Quản lý Đổi quà
+          </button>
+        </div>
+      </div>
+
+      <div class="text-[11px] text-slate-500 p-2 border-t border-slate-800">
+        Smart English Platform © 2026
+      </div>
+    </aside>
+
+    <!-- CONTENT PANES -->
+    <main class="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
+      <!-- TAB PROFILE -->
+      <section id="content-profile" class="tab-pane hidden space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-user-circle text-indigo-400"></i> Menu Tôi - Hồ Sơ Cá Nhân & Thành Tích
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-[#0c121e] border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400">Xu tích lũy</span>
+              <div class="text-xl font-extrabold text-white"><span id="profile-coins">250</span> Xu</div>
+            </div>
+          </div>
+          <div class="bg-[#0c121e] border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400">Streak học tập</span>
+              <div class="text-xl font-extrabold text-white">4 Ngày liên tiếp</div>
+            </div>
+          </div>
+          <div class="bg-[#0c121e] border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400">Trình độ CEFR</span>
+              <div class="text-xl font-extrabold text-emerald-400">Level B1</div>
+            </div>
+          </div>
+          <div class="bg-[#0c121e] border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400">Nhiệm vụ đã xong</span>
+              <div class="text-xl font-extrabold text-white">8 Nhiệm vụ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB ROADMAP -->
+      <section id="content-roadmap" class="tab-pane space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">AI GENERATED</span>
+              <h2 class="text-xl font-extrabold text-white">Lộ trình 7 ngày bứt phá kỹ năng Nghe & Từ vựng</h2>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">Lộ trình cá nhân hóa thiết kế riêng cho mục tiêu Level B1 của bạn</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-[#0c121e] border border-indigo-500/30 rounded-2xl overflow-hidden shadow-lg">
+            <div class="bg-indigo-950/20 px-5 py-3.5 border-b border-indigo-500/20 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center">D1</div>
+                <span class="font-bold text-white text-sm">Ngày 1: Chiến lược bắt từ khóa (Keywords) trong hội thoại</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">LISTENING</span>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 font-bold">+30 Xu khi hoàn thành</span>
+            </div>
+            <div class="p-4 space-y-3">
+              <div class="p-3.5 rounded-xl bg-[#080c14] border border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                  <div>
+                    <span class="text-xs font-semibold text-slate-300 line-through text-slate-400">Bài giảng giáo viên: Kỹ thuật nhận diện từ khóa</span>
+                    <div class="text-[10px] text-slate-500">Tham chiếu Lesson #1 • 15 phút</div>
+                  </div>
+                </div>
+                <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Đã xong (+15 Xu)</span>
+              </div>
+              <div class="p-3.5 rounded-xl bg-[#080c14] border border-indigo-500/40 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <i class="fa-regular fa-circle text-indigo-400 text-sm"></i>
+                  <div>
+                    <span class="text-xs font-semibold text-white">Luyện phản xạ AI: Dictation bắt từ khóa trong câu nói nhanh</span>
+                    <div class="text-[10px] text-indigo-400">Bài tập AI tự sinh • 20 phút</div>
+                  </div>
+                </div>
+                <button onclick="finishDay1Task()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow">
+                  Hoàn thành (+15 Xu)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB COURSES -->
+      <section id="content-courses" class="tab-pane hidden space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-indigo-400"></i> Menu 2 - Kho Khóa Học & Bài Giảng Admin
+        </h2>
+        <div class="bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-white">Khóa học B1 Intermediate English Mastery</h3>
+            <span class="text-xs text-emerald-400 font-mono">Đã học: 2/3 Bài</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#080c14] border border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-semibold text-white">Lesson 1: Mastering Listening Details in Everyday Conversations</span>
+            <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded">Điểm: 100/100</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB REWARDS STORE -->
+      <section id="content-rewards" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-gift text-amber-400"></i> Cửa Hàng Đổi Xu Lấy Quà Thưởng
+            </h2>
+            <p class="text-xs text-slate-400">Làm nhiệm vụ học tập mỗi ngày để tích lũy xu và đổi các phần quà giá trị</p>
+          </div>
+          <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold text-sm">
+            <i class="fa-solid fa-wallet text-amber-400"></i>
+            <span>Số dư: <strong id="reward-wallet-coins">250</strong> Xu</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg mb-2">
+                <i class="fa-solid fa-ticket"></i>
+              </div>
+              <h3 class="font-bold text-white text-sm">Voucher Giảm 50% Khóa Học B2 Pro</h3>
+              <p class="text-xs text-slate-400 mt-1">Áp dụng cho toàn bộ khóa học nâng cao chuẩn CEFR B2.</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-bold font-mono text-sm">150 Xu</span>
+              <button onclick="redeemReward('Voucher Giảm 50% Khóa Học B2 Pro', 150)" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500 shadow">Đổi quà</button>
+            </div>
+          </div>
+          <div class="bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-2">
+                <i class="fa-solid fa-file-pdf"></i>
+              </div>
+              <h3 class="font-bold text-white text-sm">Bộ Tài Liệu 500 Collocations (PDF)</h3>
+              <p class="text-xs text-slate-400 mt-1">Tuyển tập các cụm từ ăn điểm cao nhất kèm ví dụ và audio.</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-bold font-mono text-sm">80 Xu</span>
+              <button onclick="redeemReward('Bộ Tài Liệu 500 Collocations', 80)" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500 shadow">Đổi quà</button>
+            </div>
+          </div>
+          <div class="bg-[#0c121e] border border-slate-800 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg mb-2">
+                <i class="fa-solid fa-shirt"></i>
+              </div>
+              <h3 class="font-bold text-white text-sm">Áo Thun Hoodie SmartEnglish Limited</h3>
+              <p class="text-xs text-slate-400 mt-1">Áo thun cotton cao cấp in logo độc quyền dành riêng học viên xuất sắc.</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span class="text-amber-400 font-bold font-mono text-sm">300 Xu</span>
+              <button onclick="redeemReward('Áo Thun Hoodie SmartEnglish Limited', 300)" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-500 shadow">Đổi quà</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN CMS TABS -->
+      <section id="content-adm-students" class="tab-pane hidden space-y-4">
+        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-users text-purple-400 mr-2"></i>Quản Lý Học Sinh</h2>
+        <div class="bg-[#0c121e] border border-slate-800 rounded-2xl overflow-hidden p-4 text-xs">
+          Danh sách 4 học viên, kiểm soát Level CEFR, trạng thái nộp bài Placement Test và số xu thưởng.
+        </div>
+      </section>
+      <section id="content-adm-tests" class="tab-pane hidden space-y-4">
+        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-file-circle-check text-purple-400 mr-2"></i>Quản Lý Bài Thi Đầu Vào</h2>
+        <div class="bg-[#0c121e] border border-slate-800 rounded-2xl overflow-hidden p-4 text-xs">
+          Cấu hình đề thi CEFR, Passages đọc/nghe và câu hỏi trắc nghiệm kèm nhãn subSkillTag.
+        </div>
+      </section>
+      <section id="content-adm-roadmaps" class="tab-pane hidden space-y-4">
+        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-route text-purple-400 mr-2"></i>Quản Lý Lộ Trình Học AI</h2>
+        <div class="bg-[#0c121e] border border-slate-800 rounded-2xl overflow-hidden p-4 text-xs">
+          Giám sát lộ trình 7 ngày do Gemini RAG sinh cho học viên và tiến độ thực tế từng ngày.
+        </div>
+      </section>
+      <section id="content-adm-rewards" class="tab-pane hidden space-y-4">
+        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-boxes-packing text-purple-400 mr-2"></i>Quản Lý Đổi Quà & Kho Xu</h2>
+        <div class="bg-[#0c121e] border border-slate-800 rounded-2xl overflow-hidden p-4 text-xs">
+          Cấu hình danh mục quà tặng, tỷ lệ quy đổi xu và xét duyệt đơn nhận quà của học viên.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let userCoins = 250;
+    let currentRole = 'STUDENT';
+
+    function submitPlacementTest() {
+      document.getElementById('modal-test-result').classList.remove('hidden');
+    }
+
+    function enterMainApp() {
+      document.getElementById('modal-test-result').classList.add('hidden');
+      document.getElementById('screen-placement-test').classList.add('hidden');
+      document.getElementById('screen-main-app').classList.remove('hidden');
+      switchAppTab('roadmap');
+    }
+
+    function switchAppTab(tabName) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
+        btn.classList.add('text-slate-400');
+      });
+
+      const activePane = document.getElementById('content-' + tabName);
+      const activeNav = document.getElementById('nav-' + tabName);
+
+      if (activePane) activePane.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-400');
+        activeNav.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
+      }
+    }
+
+    function setRole(role) {
+      currentRole = role;
+      const btnStudent = document.getElementById('role-btn-student');
+      const btnAdmin = document.getElementById('role-btn-admin');
+      const studentMenu = document.getElementById('sidebar-student-menu');
+      const adminMenu = document.getElementById('sidebar-admin-menu');
+
+      if (role === 'STUDENT') {
+        btnStudent.classList.add('bg-indigo-600', 'text-white', 'shadow');
+        btnStudent.classList.remove('text-slate-400');
+        btnAdmin.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+        btnAdmin.classList.add('text-slate-400');
+
+        studentMenu.classList.remove('hidden');
+        adminMenu.classList.add('hidden');
+        switchAppTab('roadmap');
+      } else {
+        btnAdmin.classList.add('bg-indigo-600', 'text-white', 'shadow');
+        btnAdmin.classList.remove('text-slate-400');
+        btnStudent.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+        btnStudent.classList.add('text-slate-400');
+
+        adminMenu.classList.remove('hidden');
+        studentMenu.classList.add('hidden');
+        switchAppTab('adm-students');
+      }
+    }
+
+    function finishDay1Task() {
+      userCoins += 15;
+      updateCoinDisplay();
+      alert('Tuyệt vời! Bạn đã hoàn thành bài tập AI Ngày 1, nhận thêm +15 Xu và mở khóa trọn vẹn Ngày 2!');
+    }
+
+    function redeemReward(name, cost) {
+      if (userCoins >= cost) {
+        userCoins -= cost;
+        updateCoinDisplay();
+        alert(`Chúc mừng! Bạn đã đổi thành công: "${name}" với giá ${cost} Xu.`);
+      } else {
+        alert(`Bạn không đủ xu! Cần ${cost} Xu nhưng bạn chỉ còn ${userCoins} Xu. Hãy tiếp tục học để nhận thêm xu nhé!`);
+      }
+    }
+
+    function updateCoinDisplay() {
+      document.getElementById('user-coins').textContent = userCoins;
+      document.getElementById('profile-coins').textContent = userCoins;
+      document.getElementById('reward-wallet-coins').textContent = userCoins;
+    }
+  </script>
+</body>
+</html>
+
