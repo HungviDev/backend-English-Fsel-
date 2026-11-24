@@ -8,8 +8,7 @@
             "mainClass": "com.smartenglish.SmartEnglishApplication",
             "projectName": "smart-english-backend",
             "args": "",
-            "env": {}
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
-

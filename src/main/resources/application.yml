@@ -8,9 +8,9 @@ spring:
     name: smart-english-learning
 
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=SmartEnglishLearningDB;encrypt=true;trustServerCertificate=true
-    username: sa
-    password: 123
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=SmartEnglishLearningDB;encrypt=true;trustServerCertificate=true}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:123}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   jpa:
@@ -26,23 +26,22 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.SQLServerDialect
 
-# JWT Configuration
+# JWT Configuration (Khóa ký lấy từ biến môi trường JWT_SECRET trong .env)
 jwt:
-  # Secret key tối thiểu 256 bits (32 bytes) mã hóa Base64/Hex cho HMAC-SHA256
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 86400000 # 24 hours in milliseconds
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION_MS:86400000} # 24 hours in milliseconds
 
 # AI & LLM Integration Configuration (Google Gemini)
 ai:
   llm:
     # Endpoint chuẩn OpenAI tương thích chính thức của Google Gemini
-    api-url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
-    # Dán API Key Gemini của bạn (dạng AIzaSy...) vào đây hoặc cấu hình qua biến môi trường AI_LLM_API_KEY
-    api-key: AQ.Ab8RN6K4YtyEIYVxmr6gJOfMM_-Js0W9b1Xxo_cJcQxqlmdNCw
-    # Model Gemini tối ưu nhất hiện nay cho việc sinh JSON cấu trúc lộ trình học
-    model: gemini-3.5-flash-lite
-    # Đổi thành false để gọi Gemini thật (hoặc true nếu muốn chạy thử nghiệm không cần mạng/key)
-    mock-enabled: true
+    api-url: ${AI_LLM_API_URL:https://generativelanguage.googleapis.com/v1beta/openai/chat/completions}
+    # API Key được lấy tự động từ file .env (hoặc biến môi trường hệ thống AI_LLM_API_KEY)
+    api-key: ${AI_LLM_API_KEY:}
+    # Model Gemini tối ưu nhất cho việc sinh JSON cấu trúc lộ trình học
+    model: ${AI_LLM_MODEL:gemini-3.5-flash-lite}
+    # Đổi thành false trong .env để gọi Gemini thật (hoặc true nếu muốn chạy thử nghiệm không cần mạng/key)
+    mock-enabled: ${AI_LLM_MOCK_ENABLED:true}
 
 # OpenAPI / Swagger UI Configuration
 springdoc:
@@ -62,4 +61,3 @@ logging:
     com.smartenglish: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
-

@@ -1,0 +1,40 @@
+# Compiled class files & build artifacts
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Sensitive environment configuration files (DO NOT COMMIT)
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+logs/
+*.log
+
+# OS & Temp Files
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+
+# IDE & Editor files
+.idea/
+*.iml
+*.iws
+.settings/
+.project
+.classpath
+.factorypath
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+
