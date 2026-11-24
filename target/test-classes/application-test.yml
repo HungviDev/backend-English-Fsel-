@@ -17,12 +17,12 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
 
 jwt:
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 86400000
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION_MS:86400000}
 
 ai:
   llm:
-    api-url: https://api.openai.com/v1/chat/completions
-    api-key: test-mock-key
-    model: gpt-4o-mini
+    api-url: ${AI_LLM_API_URL:https://api.openai.com/v1/chat/completions}
+    api-key: ${AI_LLM_API_KEY:}
+    model: ${AI_LLM_MODEL:gpt-4o-mini}
     mock-enabled: true
